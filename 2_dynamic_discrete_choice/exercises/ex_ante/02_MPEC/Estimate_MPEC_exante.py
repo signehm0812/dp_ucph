@@ -86,9 +86,12 @@ def ll(theta,model,data,pnames,out=1):
     model.create_grid()
 
     # Value of options:
-    
+    value_keep = -model.cost + model.beta*ev
+    value_replace = -model.RC - model.cost[0] + model.beta*ev[0]
+    pk = 1/(1+np.exp(value_replace-value_keep))      
 
     # Evaluate the likelihood function 
+    lik_pr = pk[x]
    
     
     if out == 2:
@@ -113,6 +116,7 @@ def con_bellman(theta, model, data, pnames, out=1):
     
     # Update parameters
     ev0 = theta[-model.n:]
+    ev1, pk, dev = model.bellman(ev0=ev0, output=3)
 
     if out ==2:
         return pk, dev
